@@ -2,75 +2,62 @@ package dsa.selfprojects.notesapp.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dsa.selfprojects.notesapp.dao.NoteDAO;
 import dsa.selfprojects.notesapp.entity.Note;
+import dsa.selfprojects.notesapp.dao.NoteRepository;
 
 @Service
 public class NoteServiceImpl implements NoteService {
 
 	@Autowired
-	private NoteDAO noteDAO;
+	private NoteRepository noteRepository;
 
 	@Autowired
-	public NoteServiceImpl(NoteDAO theNoteDAO) {
-		noteDAO = theNoteDAO;
+	public NoteServiceImpl(NoteRepository theNoteRepository) {
+		noteRepository = theNoteRepository;
 	}
 
-	@Transactional
-	public List<Note> getNotes() {
-		List<Note> notesList = noteDAO.getNotes();
-		return notesList;
+	// @Transactional -- not required since spring data jpa provides out of the box
+	public List<Note> findAll() {
+		return noteRepository.findAll();
 	}
 
 	@Override
-	@Transactional
-	public void saveNote(Note theNote) {
+	public void save(Note theNote) {
 		theNote.setCreatedBy(11);
 		theNote.setCreatedDate(OffsetDateTime.now());
 		if (theNote.getNxtReviewDays() > 0)
 			theNote.setNxtReviewDt(OffsetDateTime.now().plusDays(theNote.getNxtReviewDays()));
 		else
 			theNote.setNxtReviewDt(OffsetDateTime.now().plusDays(3));
-		noteDAO.saveNote(theNote);
+		noteRepository.save(theNote);
 
 	}
 
 	@Override
-	@Transactional
-	public Note getNote(long noteId) {
-		Note noteToUpdate = noteDAO.getNote(noteId);
-		return noteToUpdate;
-	}
-
-	@Override
-	@Transactional
-	public void updateNote(Note theNote) {
-		Note noteToUpdate = noteDAO.getNote(theNote.getId());
-		noteToUpdate.setModifiedDate(OffsetDateTime.now());
-		if(theNote.getNxtReviewDays() > 0) {
-			noteToUpdate.setNxtReviewDt(OffsetDateTime.now().plusDays(theNote.getNxtReviewDays()));
-			noteToUpdate.setNxtReviewDays(theNote.getNxtReviewDays());
+	public Note findById(long noteId) {
+		Optional<Note> result = noteRepository.findById(noteId);
+		
+		Note theNote = null;
+		
+		if (result.isPresent()) {
+			theNote = result.get();
 		}
 		else {
-			noteToUpdate.setNxtReviewDt(OffsetDateTime.now().plusDays(3));
-			noteToUpdate.setNxtReviewDays(theNote.getNxtReviewDays());
-			}
-		noteToUpdate.setNote(theNote.getNote());
-		noteToUpdate.setPoints(theNote.getPoints());
-		noteToUpdate.setCtgry(theNote.getCtgry());
-		noteDAO.updateNote(noteToUpdate);		
+			// we didn't find the note
+			throw new RuntimeException("Did not find note id - " + noteId);
+		}
+		return theNote;
 	}
 
 	@Override
-	@Transactional
-	public void deleteNote(long noteId) {
-		noteDAO.deleteNote(noteId);
+	public void deleteById(long noteId) {
+		noteRepository.deleteById(noteId);
 	}
 
 }
