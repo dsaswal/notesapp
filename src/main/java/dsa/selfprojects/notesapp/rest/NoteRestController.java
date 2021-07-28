@@ -47,7 +47,7 @@ public class NoteRestController {
 		//todo - validate if note exists
 			
 		noteService.deleteNote(noteId);
-		return "Note deleted successfully, note id - " + noteId;
+		return "Note deleted successfully - " + noteId;
         }
 
 }
