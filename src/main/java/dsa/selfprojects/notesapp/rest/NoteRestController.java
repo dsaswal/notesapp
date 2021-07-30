@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import dsa.selfprojects.notesapp.entity.Note;
 import dsa.selfprojects.notesapp.service.NoteService;
 
-@RestController
+//@RestController
 @RequestMapping("/api")
 public class NoteRestController {
 	private NoteService noteService;
