@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+
 
 import dsa.selfprojects.notesapp.entity.Note;
 import dsa.selfprojects.notesapp.dao.NoteRepository;
@@ -40,6 +42,7 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
+	@Cacheable("notes")
 	public Note findById(long noteId) {
 		Optional<Note> result = noteRepository.findById(noteId);
 		
