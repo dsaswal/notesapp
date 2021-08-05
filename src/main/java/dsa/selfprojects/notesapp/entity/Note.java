@@ -42,6 +42,9 @@ public class Note {
 	@Column(name = "NXT_REVIEW_DT")
 	private OffsetDateTime nxtReviewDt;
 
+	@Column(name = "REVIEW_REQD")
+	private boolean reviewReqd;
+
 	public long getId() {
 		return id;
 	}
@@ -112,6 +115,14 @@ public class Note {
 
 	public void setNxtReviewDt(OffsetDateTime nxtReviewDt) {
 		this.nxtReviewDt = nxtReviewDt;
+	}
+
+	public boolean getReviewReqd() {
+		return reviewReqd;
+	}
+
+	public void setReviewReqd(boolean reviewReqd) {
+		this.reviewReqd = reviewReqd;
 	}
 
 	@Override
